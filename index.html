@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Christmas SPA</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+body {
+  margin:0;
+  height:100vh;
+  overflow:hidden;
+  background: radial-gradient(circle, #0b0f29, #02040f);
+  font-family:'Poppins',sans-serif;
+  color:white;
+  text-align:center;
+}
+
+/* UNIVERSAL PAGES */
+.page {
+  width:100%;
+  height:100%;
+  position:absolute;
+  top:0; left:0;
+  display:none;
+  overflow:hidden;
+}
+
+/* SHOW PAGE 1 BY DEFAULT */
+#page1 { display:block; }
+
+/* IMAGE LOGO */
+.main-logo {
+  width:140px;
+  margin-top:20px;
+  filter:drop-shadow(0 0 10px white);
+}
+
+/* TEXT LOGO */
+.text-logo {
+  font-size: 28px;
+  font-weight: 700;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  text-shadow:0 0 12px white;
+  letter-spacing: 1px;
+}
+
+/* Stars */
+.star {
+  position:absolute;
+  width:2px;
+  height:2px;
+  background:white;
+  border-radius:50%;
+  animation:twinkle 3s infinite alternate;
+}
+@keyframes twinkle {
+  0% {opacity:.3; transform:scale(1);}
+  100% {opacity:1; transform:scale(1.6);}
+}
+
+/* Sparkles */
+.sparkle {
+  position:absolute;
+  width:4px;
+  height:4px;
+  background:yellow;
+  border-radius:50%;
+  box-shadow:0 0 10px yellow;
+  animation:fall 5s linear;
+}
+@keyframes fall {
+  0% {transform:translateY(-10px); opacity:1;}
+  100% {transform:translateY(110vh); opacity:0;}
+}
+
+/* Ornaments */
+.ornament {
+  position:absolute;
+  width:22px;
+  height:22px;
+  border-radius:50%;
+  animation:float 6s infinite alternate ease-in-out;
+}
+@keyframes float { 
+  from {transform:translateY(0);} 
+  to {transform:translateY(-25px);} 
+}
+
+/* Garland */
+.garland-item {
+  position:absolute;
+  z-index:99;
+}
+.pine {
+  width:25px;
+  height:4px;
+  background:#0f0;
+  border-radius:4px;
+  transform:rotate(40deg);
+}
+.pine2 {
+  width:25px;
+  height:4px;
+  background:#0c0;
+  border-radius:4px;
+  transform:rotate(-40deg);
+}
+.leaf {
+  width:0;
+  height:0;
+  border-left:12px solid transparent;
+  border-right:12px solid transparent;
+  border-bottom:25px solid #007f00;
+  filter:drop-shadow(0 0 4px #0f0);
+}
+.berry {
+  width:10px;
+  height:10px;
+  background:red;
+  border-radius:50%;
+  box-shadow:0 0 8px red;
+  position:absolute;
+}
+
+/* DOOR */
+.door {
+  width:260px;
+  height:400px;
+  background:linear-gradient(#a0360f,#5c1b00);
+  margin:auto;
+  margin-top:30px;
+  border:4px solid #360b00;
+  border-radius:8px;
+  box-shadow:0 0 20px #000;
+  position:relative;
+  cursor:pointer;
+  animation:pulse 3s infinite ease-in-out;
+}
+@keyframes pulse {
+  0%,100% {transform:scale(1);}
+  50% {transform:scale(1.03);}
+}
+.knob {
+  width:35px;
+  height:35px;
+  background:gold;
+  border-radius:50%;
+  position:absolute;
+  right:35px;
+  top:50%;
+  transform:translateY(-50%);
+  box-shadow:0 0 10px gold;
+}
+
+/* PAGE 2 */
+#page2 h1 {
+  font-size:45px;
+  color:#00ffaa;
+  margin-top:20px;
+  text-shadow:0 0 20px #00ffaa;
+  animation:glow 3s infinite alternate;
+}
+@keyframes glow {
+  from {text-shadow:0 0 10px #00ffaa;}
+  to   {text-shadow:0 0 35px #00ffaa;}
+}
+
+.footer-input {
+  position:absolute;
+  bottom:0;
+  width:100%;
+  background:red;
+  padding:20px;
+  display:flex;
+  justify-content:center;
+  gap:10px;
+}
+.footer-input input {
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  font-size:18px;
+  width:220px;
+}
+.footer-input button {
+  padding:12px 25px;
+  background:white;
+  border:none;
+  color:red;
+  border-radius:10px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+/* PAGE 3 */
+#page3 h1 {
+  margin-top:20px;
+  font-size:28px;
+  color:#00ffaa;
+  text-shadow:0 0 20px #00ffaa;
+}
+
+.btn {
+  margin-top:20px;
+  padding:12px 25px;
+  border:none;
+  border-radius:10px;
+  font-size:18px;
+  cursor:pointer;
+  color:white;
+}
+.download { background:red; }
+.share { background:green; }
+
+.cert-box {
+  margin:auto;
+  margin-top:35px;
+  background:white;
+  color:black;
+  width:280px;
+  padding:12px;
+  border-radius:8px;
+  border:2px solid red;
+  font-size:18px;
+}
+</style>
+</head>
+<body>
+
+<!-- AUDIO -->
+<audio id="bgMusic" loop>
+  <source src="https://www.dropbox.com/scl/fi/4x9xygwokyv0vyqbcvd05/deck-the-halls-christmas-440629.mp3?rlkey=csf5erhztyq5azfyf5wqxz63t&st=aukh66k4&raw=1" type="audio/mpeg">
+</audio>
+
+<!-- PAGE 1 -->
+<div id="page1" class="page">
+  <img class="main-logo" src="https://i.postimg.cc/RVtDrqPT/Screenshot-20251029-225004-2.png">
+  <div class="text-logo">Flexi Tutors</div>
+
+  <div class="door" onclick="openDoor()">
+    <div class="knob"></div>
+  </div>
+</div>
+
+<!-- PAGE 2 -->
+<div id="page2" class="page">
+  <img class="main-logo" src="https://i.postimg.cc/RVtDrqPT/Screenshot-20251029-225004-2.png">
+  <div class="text-logo">Flexi Tutors</div>
+
+  <h1>Merry Christmas!</h1>
+
+  <div class="footer-input">
+    <input id="username" type="text" placeholder="Enter your name">
+    <button onclick="goCert()">Go</button>
+  </div>
+</div>
+
+<!-- PAGE 3 -->
+<div id="page3" class="page">
+  <img class="main-logo" src="https://i.postimg.cc/RVtDrqPT/Screenshot-20251029-225004-2.png">
+  <div class="text-logo">Flexi Tutors</div>
+
+  <h1 id="greet"></h1>
+
+  <button class="btn download" onclick="makePDF()">Download (PDF)</button>
+  <button class="btn share" onclick="share()">Share on WhatsApp</button>
+
+  <div class="cert-box">Brought to you by <b>Flexi Tutors</b></div>
+</div>
+
+<script>
+let musicStarted = false;
+
+/* MUSIC */
+document.body.addEventListener("click", () => {
+  if (!musicStarted){
+    bgMusic.play();
+    musicStarted = true;
+  }
+}, {once:true});
+
+/* DOOR → PAGE 2 */
+function openDoor(){
+  page1.style.display="none";
+  page2.style.display="block";
+  decorations(page2);
+}
+
+/* PAGE 2 → PAGE 3 */
+function goCert(){
+  let n = username.value.trim();
+  if(!n){ alert("Enter your name"); return; }
+
+  page2.style.display="none";
+  page3.style.display="block";
+  greet.innerHTML = `Dear ${n}, Flexi Tutors wishes you a Merry Christmas!`;
+
+  decorations(page3);
+}
+
+/* DECORATIONS */
+function decorations(container){
+  for(let i=0;i<70;i++){
+    let s=document.createElement("div");
+    s.className="star";
+    s.style.left=Math.random()*100+"vw";
+    s.style.top=Math.random()*100+"vh";
+    container.appendChild(s);
+  }
+
+  setInterval(()=>{
+    let sp=document.createElement("div");
+    sp.className="sparkle";
+    sp.style.left=Math.random()*100+"vw";
+    container.appendChild(sp);
+    setTimeout(()=>sp.remove(),5000);
+  },250);
+
+  let colors=["red","gold","blue","green","pink"];
+  for(let i=0;i<12;i++){
+    let o=document.createElement("div");
+    o.className="ornament";
+    let c=colors[Math.floor(Math.random()*colors.length)];
+    o.style.background=c;
+    o.style.boxShadow=`0 0 15px ${c}`;
+    o.style.left=Math.random()*100+"vw";
+    o.style.top=Math.random()*80+"vh";
+    container.appendChild(o);
+  }
+
+  let spacing = 55;
+  for(let x=0;x<window.innerWidth;x+=spacing){
+    placeGarland(container,x,0);
+    placeGarland(container,x,window.innerHeight-40);
+  }
+  for(let y=0;y<window.innerHeight;y+=spacing){
+    placeGarland(container,0,y);
+    placeGarland(container,window.innerWidth-40,y);
+  }
+}
+
+function placeGarland(parent,x,y){
+  let g=document.createElement("div");
+  g.className="garland-item";
+  g.style.left=x+"px";
+  g.style.top=y+"px";
+
+  g.innerHTML = `
+    <div class="pine"></div>
+    <div class="pine2" style="margin-top:-4px"></div>
+    <div class="leaf" style="margin-top:3px"></div>
+    <div class="berry" style="left:10px; top:20px"></div>
+  `;
+  parent.appendChild(g);
+}
+
+/* PDF */
+function makePDF() {
+  const name = username.value || "Someone";
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF("p", "pt", "a4");
+
+  const green = "#0a8a0a";
+  const red = "#c40000";
+  const gold = "#d4af37";
+
+  /* ==== OUTER FRAMES (reduced thickness & increased padding) ==== */
+  pdf.setDrawColor(red);
+  pdf.setLineWidth(6);
+  pdf.rect(30, 30, 535, 785);
+
+  pdf.setDrawColor(green);
+  pdf.setLineWidth(3);
+  pdf.rect(45, 45, 505, 755);
+
+  pdf.setDrawColor(gold);
+  pdf.setLineWidth(2);
+  pdf.rect(60, 60, 475, 725);
+
+  // Safe area top increased
+  let cursorY = 110; 
+
+  /* ==== LOGO PLACEHOLDER ==== */
+  const logo = new Image();
+  logo.crossOrigin = "anonymous";
+  logo.src = "https://i.postimg.cc/RVtDrqPT/Screenshot-20251029-225004-2.png";
+
+  logo.onload = () => {
+    pdf.addImage(logo, "PNG", 225, cursorY, 150, 150);
+    cursorY += 170;
+
+    /* TITLE BLOCK (reduced height) */
+    pdf.setFillColor(red);
+    pdf.rect(60, cursorY - 25, 475, 55, "F");
+
+    pdf.setTextColor("white");
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(22);
+    pdf.text("FLEXI TUTORS CHRISTMAS CERTIFICATE", 300, cursorY + 8, { align: "center" });
+
+    cursorY += 80;
+
+    /* BODY TEXT */
+    pdf.setTextColor("#000");
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(17);
+    pdf.text("This certifies that", 300, cursorY, { align: "center" });
+
+    cursorY += 38;
+
+    /* NAME (slightly smaller to avoid hitting borders) */
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(32);
+    pdf.setTextColor(green);
+    pdf.text(name, 300, cursorY, { align: "center" });
+
+    cursorY += 50;
+
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(17);
+    pdf.setTextColor("#000");
+    pdf.text("from Flexi Tutors has been active.", 300, cursorY, { align: "center" });
+
+    cursorY += 30;
+
+    pdf.text(
+      "Submit this certificate to the admin of the WhatsApp study group.",
+      300,
+      cursorY,
+      { align: "center" }
+    );
+
+    cursorY += 50;
+
+    /* DIVIDER */
+    pdf.setDrawColor(gold);
+    pdf.setLineWidth(2);
+    pdf.line(150, cursorY, 450, cursorY);
+
+    cursorY += 35;
+
+    /* SIGNATURE IMAGE */
+    const sigImg = new Image();
+    sigImg.crossOrigin = "anonymous";
+    sigImg.src = "https://i.postimg.cc/8z2rWfGC/Screenshot-20251126-082352-2.jpg";
+
+    sigImg.onload = () => {
+      pdf.addImage(sigImg, "PNG", 180, cursorY, 220, 60);
+      cursorY += 70;
+
+      // Signature line
+      pdf.setDrawColor("#000");
+      pdf.line(150, cursorY, 450, cursorY);
+
+      cursorY += 20;
+
+      // Label
+      pdf.setFontSize(14);
+      pdf.text("CEO, FLEXI SYSTEMS", 300, cursorY, { align: "center" });
+
+      cursorY += 45;
+
+      /* FOOTER */
+      pdf.setFont("helvetica", "bold");
+      pdf.setFontSize(20);
+      pdf.setTextColor(red);
+      pdf.text("Merry Christmas!", 300, cursorY, { align: "center" });
+
+      pdf.save(`FlexiTutors_Certificate_${name}.pdf`);
+    };
+  };
+}
+
+/* WHATSAPP */
+function share(){
+  let n = username.value || "Someone";
+  let msg = `${n} is wishing you a Merry Christmas! 🎄✨`;
+  window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`,"_blank");
+}
+</script>
+
+</body>
+</html>
