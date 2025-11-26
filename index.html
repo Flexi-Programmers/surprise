@@ -264,8 +264,15 @@ body {
   <img class="main-logo" src="https://i.postimg.cc/RVtDrqPT/Screenshot-20251029-225004-2.png">
   <div class="text-logo">Flexi Tutors</div>
 
-  <h1 id="greet"></h1>
+<div class="text-logo">Flexi Tutors</div>
+<div id="countdown" style="
+  font-size:22px;
+  margin-top:10px;
+  text-shadow:0 0 10px #00ffaa;
+"></div>
 
+  <h1 id="greet"></h1>
+  
   <button class="btn download" onclick="makePDF()">Download (PDF)</button>
   <button class="btn share" onclick="share()">Share on WhatsApp</button>
 
@@ -298,7 +305,7 @@ function goCert(){
   page2.style.display="none";
   page3.style.display="block";
   greet.innerHTML = `Dear ${n}, Flexi Tutors wishes you a Merry Christmas!`;
-
+let now = new Date().toLocaleString("en-US", { timeZone: "Africa/Lagos" });
   decorations(page3);
 }
 
@@ -481,7 +488,33 @@ function share(){
   let msg = `${n} is wishing you a Merry Christmas! 🎄✨`;
   window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`,"_blank");
 }
-</script>
 
+/* COUNTDOWN — Nigeria Time */
+function startCountdown() {
+  const target = new Date("December 25, 2025 00:00:00");
+
+  setInterval(() => {
+    let nowStr = new Date().toLocaleString("en-US", { timeZone: "Africa/Lagos" });
+    let now = new Date(nowStr);
+
+    let diff = target - now;
+
+    if (diff <= 0){
+      countdown.innerHTML = "🎄 It's Christmas! 🎉";
+      return;
+    }
+
+    let d = Math.floor(diff / (1000 * 60 * 60 * 24));
+    let h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    let m = Math.floor((diff / (1000 * 60)) % 60);
+    let s = Math.floor((diff / 1000) % 60);
+
+    countdown.innerHTML = 
+      `🎅 Countdown: <b>${d}</b>d : <b>${h}</b>h : <b>${m}</b>m : <b>${s}</b>s`;
+  }, 1000);
+}
+
+startCountdown();
+</script>
 </body>
 </html>
