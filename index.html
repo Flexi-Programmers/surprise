@@ -3,10 +3,10 @@
 <head>
 <title>Christmas SPA</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<!-- PDF -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 <style>
 body {
   margin:0;
@@ -28,17 +28,14 @@ body {
   overflow:hidden;
 }
 
-/* SHOW PAGE 1 BY DEFAULT */
 #page1 { display:block; }
 
-/* IMAGE LOGO */
+/* LOGO */
 .main-logo {
   width:140px;
   margin-top:20px;
   filter:drop-shadow(0 0 10px white);
 }
-
-/* TEXT LOGO */
 .text-logo {
   font-size: 28px;
   font-weight: 700;
@@ -91,38 +88,25 @@ body {
 }
 
 /* Garland */
-.garland-item {
-  position:absolute;
-  z-index:99;
-}
+.garland-item { position:absolute; z-index:99; }
 .pine {
-  width:25px;
-  height:4px;
-  background:#0f0;
-  border-radius:4px;
+  width:25px; height:4px; background:#0f0; border-radius:4px;
   transform:rotate(40deg);
 }
 .pine2 {
-  width:25px;
-  height:4px;
-  background:#0c0;
-  border-radius:4px;
+  width:25px; height:4px; background:#0c0; border-radius:4px;
   transform:rotate(-40deg);
 }
 .leaf {
-  width:0;
-  height:0;
+  width:0; height:0;
   border-left:12px solid transparent;
   border-right:12px solid transparent;
   border-bottom:25px solid #007f00;
   filter:drop-shadow(0 0 4px #0f0);
 }
 .berry {
-  width:10px;
-  height:10px;
-  background:red;
-  border-radius:50%;
-  box-shadow:0 0 8px red;
+  width:10px; height:10px; background:red;
+  border-radius:50%; box-shadow:0 0 8px red;
   position:absolute;
 }
 
@@ -170,30 +154,17 @@ body {
 }
 
 .footer-input {
-  position:absolute;
-  bottom:0;
-  width:100%;
-  background:red;
-  padding:20px;
-  display:flex;
-  justify-content:center;
-  gap:10px;
+  position:absolute; bottom:0; width:100%;
+  background:red; padding:20px; display:flex;
+  justify-content:center; gap:10px;
 }
 .footer-input input {
-  padding:12px;
-  border:none;
-  border-radius:10px;
-  font-size:18px;
-  width:220px;
+  padding:12px; border:none; border-radius:10px;
+  font-size:18px; width:220px;
 }
 .footer-input button {
-  padding:12px 25px;
-  background:white;
-  border:none;
-  color:red;
-  border-radius:10px;
-  font-weight:bold;
-  cursor:pointer;
+  padding:12px 25px; background:white; border:none;
+  color:red; border-radius:10px; font-weight:bold; cursor:pointer;
 }
 
 /* PAGE 3 */
@@ -217,15 +188,24 @@ body {
 .share { background:green; }
 
 .cert-box {
-  margin:auto;
-  margin-top:35px;
-  background:white;
-  color:black;
-  width:280px;
-  padding:12px;
-  border-radius:8px;
-  border:2px solid red;
+  margin:auto; margin-top:35px;
+  background:white; color:black;
+  width:280px; padding:12px;
+  border-radius:8px; border:2px solid red;
   font-size:18px;
+}
+
+.footer-input {
+  position:absolute; bottom:0; width:100%;
+  background:red; padding:20px; display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:10px;
+}
+
+.footer-input input {
+  padding:12px; border:none; border-radius:10px;
+  font-size:18px; width:260px;
 }
 </style>
 </head>
@@ -241,7 +221,7 @@ body {
   <img class="main-logo" src="https://i.postimg.cc/RVtDrqPT/Screenshot-20251029-225004-2.png">
   <div class="text-logo">Flexi Tutors</div>
 
-  <div class="door" onclick="openDoor()">
+  <div class="door">
     <div class="knob"></div>
   </div>
 </div>
@@ -251,12 +231,13 @@ body {
   <img class="main-logo" src="https://i.postimg.cc/RVtDrqPT/Screenshot-20251029-225004-2.png">
   <div class="text-logo">Flexi Tutors</div>
 
-  <h1>Merry Christmas!</h1>
+  <h1>Merry Christmas</h1>
 
-  <div class="footer-input">
-    <input id="username" type="text" placeholder="Enter your name">
-    <button onclick="goCert()">Go</button>
-  </div>
+<div class="footer-input">
+  <input id="username" type="text" placeholder="Enter your name">
+  <input id="whatsapp" type="tel" placeholder="Enter WhatsApp number">
+  <button onclick="goCert()">Go</button>
+</div>
 </div>
 
 <!-- PAGE 3 -->
@@ -264,12 +245,7 @@ body {
   <img class="main-logo" src="https://i.postimg.cc/RVtDrqPT/Screenshot-20251029-225004-2.png">
   <div class="text-logo">Flexi Tutors</div>
 
-<div class="text-logo">Flexi Tutors</div>
-<div id="countdown" style="
-  font-size:22px;
-  margin-top:10px;
-  text-shadow:0 0 10px #00ffaa;
-"></div>
+  <div id="countdown" style="font-size:22px; margin-top:10px; text-shadow:0 0 10px #00ffaa;"></div>
 
   <h1 id="greet"></h1>
   
@@ -278,83 +254,122 @@ body {
 
   <div class="cert-box">Brought to you by <b>Flexi Tutors</b></div>
 </div>
-
 <script>
+// ---------------------------------------  
+// FIREBASE CONFIGURATION  
+// ---------------------------------------  
+document.addEventListener("DOMContentLoaded", function () {  
+
+const firebaseConfig = {  
+  apiKey: "AIzaSyCaVTwzI_0h0RVdh_ASDDqdsvrg_3oHPSs",  
+  authDomain: "flexi-702a9.firebaseapp.com",  
+  projectId: "flexi-702a9",  
+  storageBucket: "flexi-702a9.appspot.com",  
+  messagingSenderId: "647814322831",  
+  appId: "1:647814322831:web:74fc00cfc62abdc7e76efa",  
+  measurementId: "G-7BC49SZJ6V"  
+};
+
+// INIT FIREBASE
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
 let musicStarted = false;
 
-/* MUSIC */
+// GET ELEMENTS
+const page1 = document.getElementById("page1");
+const page2 = document.getElementById("page2");
+const page3 = document.getElementById("page3");
+const username = document.getElementById("username");
+const greet = document.getElementById("greet");
+const countdown = document.getElementById("countdown");
+const bgMusic = document.getElementById("bgMusic");
+
+// FIX DOOR CLICK
+document.querySelector(".door").onclick = () => {
+  page1.style.display = "none";
+  page2.style.display = "block";
+  decorations(page2);
+};
+
+// ---------------------------------------
+// AUTO VERIFICATION MODE (?id=XXXXX)
+// ---------------------------------------
+const params = new URLSearchParams(window.location.search);
+const verifyID = params.get("id");
+
+if (verifyID) runVerification(verifyID);
+
+// ---------------------------------------
+// MUSIC
+// ---------------------------------------
 document.body.addEventListener("click", () => {
-  if (!musicStarted){
+  if (!musicStarted) {
     bgMusic.play();
     musicStarted = true;
   }
-}, {once:true});
+}, { once: true });
 
-/* DOOR → PAGE 2 */
-function openDoor(){
-  page1.style.display="none";
-  page2.style.display="block";
-  decorations(page2);
-}
+// ---------------------------------------
+// PAGE NAVIGATION
+// ---------------------------------------
+function goCert() {
 
-/* PAGE 2 → PAGE 3 */
-function goCert(){
   let n = username.value.trim();
-  if(!n){ alert("Enter your name"); return; }
+  let w = whatsapp.value.trim();
 
-  page2.style.display="none";
-  page3.style.display="block";
-  greet.innerHTML = `Dear ${n}, Flexi Tutors wishes you a Merry Christmas!`;
-let now = new Date().toLocaleString("en-US", { timeZone: "Africa/Lagos" });
+  if (!n) return alert("Enter your name");
+  if (!w) return alert("Enter your WhatsApp number");
+
+  page2.style.display = "none";
+  page3.style.display = "block";
+
+  greet.innerHTML = `Dear ${n}, Flexi Tutors wishes you a Merry Christmas.`;
+
   decorations(page3);
+
+  generateCertificate(n, w); // correct
 }
 
-/* DECORATIONS */
-function decorations(container){
-  for(let i=0;i<70;i++){
-    let s=document.createElement("div");
-    s.className="star";
-    s.style.left=Math.random()*100+"vw";
-    s.style.top=Math.random()*100+"vh";
+
+// ---------------------------------------
+// DECORATIONS
+// ---------------------------------------
+function decorations(container) {
+  for (let i = 0; i < 70; i++) {
+    let s = document.createElement("div");
+    s.className = "star";
+    s.style.left = Math.random() * 100 + "vw";
+    s.style.top = Math.random() * 100 + "vh";
     container.appendChild(s);
   }
 
-  setInterval(()=>{
-    let sp=document.createElement("div");
-    sp.className="sparkle";
-    sp.style.left=Math.random()*100+"vw";
+  setInterval(() => {
+    let sp = document.createElement("div");
+    sp.className = "sparkle";
+    sp.style.left = Math.random() * 100 + "vw";
     container.appendChild(sp);
-    setTimeout(()=>sp.remove(),5000);
-  },250);
+    setTimeout(() => sp.remove(), 5000);
+  }, 250);
 
-  let colors=["red","gold","blue","green","pink"];
-  for(let i=0;i<12;i++){
-    let o=document.createElement("div");
-    o.className="ornament";
-    let c=colors[Math.floor(Math.random()*colors.length)];
-    o.style.background=c;
-    o.style.boxShadow=`0 0 15px ${c}`;
-    o.style.left=Math.random()*100+"vw";
-    o.style.top=Math.random()*80+"vh";
+  let colors = ["red", "gold", "blue", "green", "pink"];
+  for (let i = 0; i < 12; i++) {
+    let o = document.createElement("div");
+    o.className = "ornament";
+    let c = colors[Math.floor(Math.random() * colors.length)];
+    o.style.background = c;
+    o.style.boxShadow = `0 0 15px ${c}`;
+    o.style.left = Math.random() * 100 + "vw";
+    o.style.top = Math.random() * 80 + "vh";
     container.appendChild(o);
-  }
-
-  let spacing = 55;
-  for(let x=0;x<window.innerWidth;x+=spacing){
-    placeGarland(container,x,0);
-    placeGarland(container,x,window.innerHeight-40);
-  }
-  for(let y=0;y<window.innerHeight;y+=spacing){
-    placeGarland(container,0,y);
-    placeGarland(container,window.innerWidth-40,y);
   }
 }
 
-function placeGarland(parent,x,y){
-  let g=document.createElement("div");
-  g.className="garland-item";
-  g.style.left=x+"px";
-  g.style.top=y+"px";
+function placeGarland(parent, x, y) {
+  let g = document.createElement("div");
+  g.className = "garland-item";
+  g.style.left = x + "px";
+  g.style.top = y + "px";
 
   g.innerHTML = `
     <div class="pine"></div>
@@ -362,145 +377,276 @@ function placeGarland(parent,x,y){
     <div class="leaf" style="margin-top:3px"></div>
     <div class="berry" style="left:10px; top:20px"></div>
   `;
+
   parent.appendChild(g);
 }
 
-/* PDF */
-function makePDF() {
-  const name = username.value || "Someone";
-  const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF("p", "pt", "a4");
-
-  const green = "#0a8a0a";
-  const red = "#c40000";
-  const gold = "#d4af37";
-
-  /* ==== OUTER FRAMES (reduced thickness & increased padding) ==== */
-  pdf.setDrawColor(red);
-  pdf.setLineWidth(6);
-  pdf.rect(30, 30, 535, 785);
-
-  pdf.setDrawColor(green);
-  pdf.setLineWidth(3);
-  pdf.rect(45, 45, 505, 755);
-
-  pdf.setDrawColor(gold);
-  pdf.setLineWidth(2);
-  pdf.rect(60, 60, 475, 725);
-
-  // Safe area top increased
-  let cursorY = 110; 
-
-  /* ==== LOGO PLACEHOLDER ==== */
-  const logo = new Image();
-  logo.crossOrigin = "anonymous";
-  logo.src = "https://i.postimg.cc/RVtDrqPT/Screenshot-20251029-225004-2.png";
-
-  logo.onload = () => {
-    pdf.addImage(logo, "PNG", 225, cursorY, 150, 150);
-    cursorY += 170;
-
-    /* TITLE BLOCK (reduced height) */
-    pdf.setFillColor(red);
-    pdf.rect(60, cursorY - 25, 475, 55, "F");
-
-    pdf.setTextColor("white");
-    pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(22);
-    pdf.text("FLEXI TUTORS CHRISTMAS CERTIFICATE", 300, cursorY + 8, { align: "center" });
-
-    cursorY += 80;
-
-    /* BODY TEXT */
-    pdf.setTextColor("#000");
-    pdf.setFont("helvetica", "normal");
-    pdf.setFontSize(17);
-    pdf.text("This certifies that", 300, cursorY, { align: "center" });
-
-    cursorY += 38;
-
-    /* NAME (slightly smaller to avoid hitting borders) */
-    pdf.setFont("helvetica", "bold");
-    pdf.setFontSize(32);
-    pdf.setTextColor(green);
-    pdf.text(name, 300, cursorY, { align: "center" });
-
-    cursorY += 50;
-
-    pdf.setFont("helvetica", "normal");
-    pdf.setFontSize(17);
-    pdf.setTextColor("#000");
-    pdf.text("from Flexi Tutors has been active.", 300, cursorY, { align: "center" });
-
-    cursorY += 30;
-
-    pdf.text(
-      "Submit this certificate to the admin of the WhatsApp study group.",
-      300,
-      cursorY,
-      { align: "center" }
-    );
-
-    cursorY += 50;
-
-    /* DIVIDER */
-    pdf.setDrawColor(gold);
-    pdf.setLineWidth(2);
-    pdf.line(150, cursorY, 450, cursorY);
-
-    cursorY += 35;
-
-    /* SIGNATURE IMAGE */
-    const sigImg = new Image();
-    sigImg.crossOrigin = "anonymous";
-    sigImg.src = "https://i.postimg.cc/8z2rWfGC/Screenshot-20251126-082352-2.jpg";
-
-    sigImg.onload = () => {
-      pdf.addImage(sigImg, "PNG", 180, cursorY, 220, 60);
-      cursorY += 70;
-
-      // Signature line
-      pdf.setDrawColor("#000");
-      pdf.line(150, cursorY, 450, cursorY);
-
-      cursorY += 20;
-
-      // Label
-      pdf.setFontSize(14);
-      pdf.text("CEO, FLEXI SYSTEMS", 300, cursorY, { align: "center" });
-
-      cursorY += 45;
-
-      /* FOOTER */
-      pdf.setFont("helvetica", "bold");
-      pdf.setFontSize(20);
-      pdf.setTextColor(red);
-      pdf.text("Merry Christmas!", 300, cursorY, { align: "center" });
-
-      pdf.save(`FlexiTutors_Certificate_${name}.pdf`);
-    };
-  };
+// ---------------------------------------
+// IMAGE LOADER
+// ---------------------------------------
+function loadImage(url) {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => resolve(img);
+    img.src = url;
+  });
 }
 
-/* WHATSAPP */
-function share(){
+// ---------------------------------------
+// GENERATE CERTIFICATE PROCESS
+// ---------------------------------------
+function generateCertificate(name, whatsapp) {
+  const certID =
+    "CERT-" + Date.now() + "-" + Math.floor(1000 + Math.random() * 9000);
+
+  createQR(certID);
+  saveCertificate(name, whatsapp, certID);
+
+  setTimeout(() => {
+  makePDF(name, certID);
+  }, 800);
+}
+
+// ---------------------------------------
+// CREATE QR CODE
+// ---------------------------------------
+function createQR(certID) {
+  const qrCanvas = document.createElement("canvas");
+
+  new QRious({
+    element: qrCanvas,
+    value: "https://flexi-programmers.github.io/surprise/?id=" + certID,
+    size: 180,
+    level: "H",
+  });
+
+  document.qrImage = qrCanvas;
+}
+
+// ---------------------------------------
+// SAVE CERTIFICATE — FIRESTORE FIXED
+// ---------------------------------------
+function saveCertificate(name, whatsapp, certID) {
+
+  // Remove spaces and non-digits (except +)
+  whatsapp = whatsapp.trim();
+  whatsapp = whatsapp.replace(/[^0-9+]/g, "");
+
+  if (!whatsapp.startsWith("+234")) {
+    if (whatsapp.startsWith("+")) whatsapp = whatsapp.substring(1);
+    if (whatsapp.startsWith("0")) whatsapp = whatsapp.substring(1);
+    whatsapp = "+234" + whatsapp;
+  }
+
+  db.collection("certificates")
+    .doc(certID)
+    .set({
+      id: certID,
+      name,
+      whatsapp,
+      timestamp: new Date().toISOString(),
+      verificationURL:
+        "https://flexi-programmers.github.io/surprise/?id=" + certID,
+      status: "valid",
+    })
+    .then(() => console.log("Saved to Firestore"))
+    .catch(err => console.error("Firestore error:", err));
+}
+
+// ---------------------------------------
+// PDF GENERATOR (UNCHANGED)
+// ---------------------------------------
+function makePDF(name, certID) {
+const { jsPDF } = window.jspdf;
+const pdf = new jsPDF("p", "pt", "a4");
+
+const green = "#0a8a0a";
+const red = "#c40000";
+const gold = "#d4af37";
+
+const logoURL =
+"https://i.postimg.cc/RVtDrqPT/Screenshot-20251029-225004-2.png";
+const sigURL =
+"https://i.postimg.cc/8z2rWfGC/Screenshot-20251126-082352-2.jpg";
+
+Promise.all([loadImage(logoURL), loadImage(sigURL)]).then(
+([logo, sigImg]) => {
+const pageWidth = pdf.internal.pageSize.getWidth();
+const pageHeight = pdf.internal.pageSize.getHeight();
+
+// Watermark  
+  pdf.saveGraphicsState();  
+  pdf.setGState(new pdf.GState({ opacity: 0.08 }));  
+  pdf.setFontSize(120);  
+  pdf.setTextColor(150);  
+  pdf.text("FLEXI TUTORS", pageWidth / 2, pageHeight / 2, {  
+    align: "center",  
+    angle: 35,  
+  });  
+  pdf.restoreGraphicsState();  
+
+  // Borders  
+  pdf.setDrawColor(red);  
+  pdf.setLineWidth(6);  
+  pdf.rect(30, 30, 535, 785);  
+
+  pdf.setDrawColor(green);  
+  pdf.setLineWidth(3);  
+  pdf.rect(45, 45, 505, 755);  
+
+  pdf.setDrawColor(gold);  
+  pdf.setLineWidth(2);  
+  pdf.rect(60, 60, 475, 725);  
+
+  let cursorY = 110;  
+
+  // Logo  
+  pdf.addImage(logo, "PNG", 225, cursorY, 150, 150);  
+  cursorY += 170;  
+
+  // Header  
+  pdf.setFillColor(red);  
+  pdf.rect(60, cursorY - 25, 475, 55, "F");  
+
+  pdf.setTextColor("white");  
+  pdf.setFont("helvetica", "bold");  
+  pdf.setFontSize(22);  
+  pdf.text("FLEXI TUTORS CHRISTMAS CERTIFICATE", 300, cursorY + 8, {  
+    align: "center",  
+  });  
+
+  cursorY += 80;  
+
+  // Body text  
+  pdf.setFontSize(17);  
+  pdf.setTextColor("#000");  
+  pdf.text("This certifies that", 300, cursorY, { align: "center" });  
+  cursorY += 38;  
+
+  pdf.setFont("helvetica", "bold");  
+  pdf.setFontSize(32);  
+  pdf.setTextColor(green);  
+  pdf.text(name, 300, cursorY, { align: "center" });  
+  cursorY += 50;  
+
+  pdf.setFont("helvetica", "normal");  
+  pdf.setFontSize(17);  
+  pdf.setTextColor("#000");  
+  pdf.text("from Flexi Tutors has been active.", 300, cursorY, {  
+    align: "center",  
+  });  
+
+  cursorY += 30;  
+
+  pdf.text(  
+    "Submit this certificate to the admin of the WhatsApp study group.",  
+    300,  
+    cursorY,  
+    { align: "center" }  
+  );  
+
+  cursorY += 50;  
+
+  // Line  
+  pdf.setDrawColor(gold);  
+  pdf.line(150, cursorY, 450, cursorY);  
+
+  cursorY += 35;  
+
+  // Signature  
+  pdf.addImage(sigImg, "PNG", 180, cursorY, 220, 60);  
+  cursorY += 70;  
+
+  // Signature line  
+  pdf.setDrawColor("#000");  
+  pdf.line(150, cursorY, 450, cursorY);  
+  cursorY += 20;  
+
+  pdf.setFontSize(14);  
+  pdf.text("CEO, FLEXI SYSTEMS", 300, cursorY, { align: "center" });  
+
+  cursorY += 45;  
+
+  pdf.setFont("helvetica", "bold");  
+  pdf.setFontSize(20);  
+  pdf.setTextColor(red);  
+  pdf.text("Merry Christmas", 300, cursorY, { align: "center" });  
+
+  // QR  
+  const qrData = document.qrImage.toDataURL("image/png");  
+  pdf.addImage(qrData, "PNG", pageWidth - 200, pageHeight - 250, 150, 150);  
+
+  // Certificate ID  
+  pdf.setFontSize(12);  
+  pdf.setTextColor("#000");  
+  pdf.text("Certificate ID: " + certID, 40, pageHeight - 40);  
+
+  pdf.save(`FlexiTutors_Certificate_${name}.pdf`);  
+}
+
+);
+}
+// ---------------------------------------
+// WHATSAPP SHARE
+// ---------------------------------------
+function share() {
   let n = username.value || "Someone";
-  let msg = `${n} is wishing you a Merry Christmas! 🎄✨`;
-  window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`,"_blank");
+  let msg = `${n} is wishing you a Merry Christmas!`;
+
+  window.open(
+    `https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`,
+    "_blank"
+  );
 }
 
-/* COUNTDOWN — Nigeria Time */
+// ---------------------------------------
+// VERIFICATION PAGE
+// ---------------------------------------
+function runVerification(id) {
+
+  page1.style.display = "none";
+  page2.style.display = "none";
+  page3.style.display = "block";
+
+  greet.innerHTML = "Verifying certificate...";
+
+  db.collection("certificates")
+    .doc(id)
+    .get()
+    .then(doc => {
+      if (!doc.exists) {
+        greet.innerHTML = "<b style='color:red;'>❌ INVALID CERTIFICATE ID</b>";
+        return;
+      }
+
+      let data = doc.data();
+
+      greet.innerHTML = `
+        <h2 style="color:green;">✔ Certificate Verified</h2><br>
+        <b>Name:</b> ${data.name}<br>
+        <b>ID:</b> ${data.id}<br>
+        <b>Status:</b> ${data.status}<br>
+        <b>Issued:</b> ${new Date(data.timestamp).toDateString()}<br><br>
+        This certificate is valid and issued by Flexi Tutors.
+      `;
+    });
+}
+
+// COUNTDOWN
 function startCountdown() {
   const target = new Date("December 25, 2025 00:00:00");
 
   setInterval(() => {
-    let nowStr = new Date().toLocaleString("en-US", { timeZone: "Africa/Lagos" });
-    let now = new Date(nowStr);
+    let nowStr = new Date().toLocaleString("en-US", {
+      timeZone: "Africa/Lagos",
+    });
 
+    let now = new Date(nowStr);
     let diff = target - now;
 
-    if (diff <= 0){
-      countdown.innerHTML = "🎄 It's Christmas! 🎉";
+    if (diff <= 0) {
+      countdown.innerHTML = "It is Christmas!";
       return;
     }
 
@@ -509,12 +655,18 @@ function startCountdown() {
     let m = Math.floor((diff / (1000 * 60)) % 60);
     let s = Math.floor((diff / 1000) % 60);
 
-    countdown.innerHTML = 
-      `🎅 Countdown: <b>${d}</b>d : <b>${h}</b>h : <b>${m}</b>m : <b>${s}</b>s`;
+    countdown.innerHTML = `Countdown: <b>${d}</b>d : <b>${h}</b>h : <b>${m}</b>m : <b>${s}</b>s`;
   }, 1000);
 }
 
 startCountdown();
+
+// Make functions global
+window.goCert = goCert;
+window.makePDF = makePDF;
+window.share = share;
+
+});
 </script>
 </body>
 </html>
