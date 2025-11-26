@@ -400,8 +400,10 @@ function generateCertificate(name, whatsapp) {
   const certID =
     "CERT-" + Date.now() + "-" + Math.floor(1000 + Math.random() * 9000);
 
-  createQR(certID);
+  createQR(certID).then(() => {
   saveCertificate(name, whatsapp, certID);
+  makePDF(name, certID);
+});
 
   setTimeout(() => {
   makePDF(name, certID);
@@ -412,16 +414,21 @@ function generateCertificate(name, whatsapp) {
 // CREATE QR CODE
 // ---------------------------------------
 function createQR(certID) {
-  const qrCanvas = document.createElement("canvas");
+  return new Promise(resolve => {
+    const qrCanvas = document.createElement("canvas");
 
-  new QRious({
-    element: qrCanvas,
-    value: "https://flexi-programmers.github.io/surprise/?id=" + certID,
-    size: 180,
-    level: "H",
+    new QRious({
+      element: qrCanvas,
+      value: "https://flexi-programmers.github.io/surprise/?id=" + certID,
+      size: 180,
+      level: "H",
+    });
+
+    document.qrImage = qrCanvas;
+
+    // Wait for QRious to finish drawing
+    setTimeout(() => resolve(), 200);
   });
-
-  document.qrImage = qrCanvas;
 }
 
 // ---------------------------------------
@@ -572,7 +579,10 @@ const pageHeight = pdf.internal.pageSize.getHeight();
   pdf.setFontSize(20);  
   pdf.setTextColor(red);  
   pdf.text("Merry Christmas", 300, cursorY, { align: "center" });  
-
+if (!document.qrImage) {
+  alert("QR not generated yet — retry.");
+  return;
+}
   // QR  
   const qrData = document.qrImage.toDataURL("image/png");  
   pdf.addImage(qrData, "PNG", pageWidth - 200, pageHeight - 250, 150, 150);  
